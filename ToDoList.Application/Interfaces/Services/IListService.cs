@@ -11,8 +11,8 @@ namespace ToDoList.Application.Interfaces.Services
 	public interface IListService
 	{
 		Task CreateList(dtoList list);
-		Task AddItemToList(dtoItem item, dtoList list);
-		Task RemoveItemToList(dtoList list, dtoItem item);
+		Task AddItemToList(int listId, int itemId);
+		Task RemoveItemToList(int listId, int itemId);
 		Task UpdateList(dtoList list);
 		Task RemoveList(int id);
 		Task<dtoList> ShowList(int id);

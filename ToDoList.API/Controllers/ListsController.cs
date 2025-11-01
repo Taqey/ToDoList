@@ -22,7 +22,7 @@ namespace ToDoList.API.Controllers
 		[HttpGet]
 		public async Task<List<dtoList>> Get()
 		{
-			var lists=await _service.ShowLists();
+			var lists = await _service.ShowLists();
 			return lists;
 		}
 
@@ -30,7 +30,7 @@ namespace ToDoList.API.Controllers
 		[HttpGet("{id}")]
 		public async Task<dtoList> Get(int id)
 		{
-			
+
 			return await _service.ShowList(id);
 		}
 
@@ -44,12 +44,27 @@ namespace ToDoList.API.Controllers
 		}
 
 		// PUT api/<ListsController>/5
-		//[HttpPut("{id}")]
-		//public async Task Put(int id, [FromBody] ListDto dto)
-		//{
-		//	var List=new dtoList { Id = id,Name=dto.Name,Description=dto.Description,Items=dto.Items };
-		//	await _service.UpdateList(List);
-		//}
+		[HttpPut("EditList/{id}")]
+		public async Task EditList(int id, [FromBody] ListDto dto)
+		{
+			var list = new dtoList { Id = id, Name = dto.Name, Description = dto.Description, Items = dto.Items };
+			await _service.UpdateList(list);
+		}
+
+		[HttpPut("AddItem/{id}")]
+		public async Task AddItem(int id, [FromBody] int itemId)
+		{
+
+			await _service.AddItemToList(id, itemId);
+		}
+
+		[HttpPut("RemoveItem/{id}")]
+		public async Task RemoveItem(int id, [FromBody] int itemId)
+		{
+
+			await _service.RemoveItemToList(id, itemId);
+		}
+
 
 		// DELETE api/<ListsController>/5
 		[HttpDelete("{id}")]

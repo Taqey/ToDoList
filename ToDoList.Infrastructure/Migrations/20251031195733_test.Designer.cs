@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoList.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using ToDoList.Infrastructure.Persistence;
 namespace ToDoList.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251031195733_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,7 +246,7 @@ namespace ToDoList.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("DateId");
 
-                    b.ToTable("Dates", (string)null);
+                    b.ToTable("Dates");
                 });
 
             modelBuilder.Entity("ToDoList.Domain.Entities.Item", b =>
@@ -280,7 +283,7 @@ namespace ToDoList.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("ToDoList.Domain.Entities.ItemDate", b =>
@@ -303,7 +306,7 @@ namespace ToDoList.Infrastructure.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemDates", (string)null);
+                    b.ToTable("ItemDates");
                 });
 
             modelBuilder.Entity("ToDoList.Domain.Entities.List", b =>
@@ -332,7 +335,7 @@ namespace ToDoList.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Lists", (string)null);
+                    b.ToTable("Lists");
                 });
 
             modelBuilder.Entity("ToDoList.Domain.Entities.ApplicationUser", b =>

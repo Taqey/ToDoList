@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using ToDoList.Domain.Repositories;
 using ToDoList.Infrastructure.Persistence;
 
@@ -40,6 +41,24 @@ namespace ToDoList.Infrastructure.Implementation
 		{
 			_context.Entry(Entity).State = EntityState.Modified;
 
+		}
+		public async Task<IEnumerable<T>> GetAllIncluding(params Expression<Func<T, object>>[] includes)
+		{
+			IQueryable<T> query = _context.Set<T>().AsQueryable();
+			foreach (var include in includes)
+			{
+				query = query.Include(include);
+			}
+			return await query.ToListAsync();
+		}
+		public async Task<IEnumerable<T>> GetAllIncluding2(params Expression<Func<T, object>>[] includes)
+		{
+			IQueryable<T> query = _context.Set<T>().AsQueryable();
+			foreach (var include in includes)
+			{
+				query = query.Include(include);
+			}
+			return await query.AsNoTracking().ToListAsync();
 		}
 	}
 }

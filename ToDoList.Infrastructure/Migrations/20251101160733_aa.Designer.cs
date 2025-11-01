@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoList.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using ToDoList.Infrastructure.Persistence;
 namespace ToDoList.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251101160733_aa")]
+    partial class aa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,7 +265,7 @@ namespace ToDoList.Infrastructure.Migrations
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ListId")
+                    b.Property<int>("ListId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -396,7 +399,9 @@ namespace ToDoList.Infrastructure.Migrations
                 {
                     b.HasOne("ToDoList.Domain.Entities.List", "List")
                         .WithMany("Items")
-                        .HasForeignKey("ListId");
+                        .HasForeignKey("ListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ToDoList.Domain.Entities.ApplicationUser", "User")
                         .WithMany("Items")

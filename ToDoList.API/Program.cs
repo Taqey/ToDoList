@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using ToDoList.Application.Implementaion.Services;
+using ToDoList.Application.Interfaces.Services;
 using ToDoList.Domain.Entities;
 using ToDoList.Domain.Repositories;
 using ToDoList.Infrastructure.Implementation;
@@ -34,7 +36,9 @@ namespace ToDoList.API
 				options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 			});
 			builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
-			
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+			builder.Services.AddScoped<IListService,ListService>();
+			builder.Services.AddScoped<IItemService, ItemService>();
 			var app = builder.Build();
 			
 

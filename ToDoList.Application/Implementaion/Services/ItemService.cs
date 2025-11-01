@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDoList.Application.Contracts;
 using ToDoList.Application.Interfaces.Services;
 using ToDoList.Domain.Entities;
 using ToDoList.Domain.Repositories;
 
 namespace ToDoList.Application.Implementaion.Services
 {
-	internal class ItemService : IItemService
+	public class ItemService : IItemService
 	{
 		private readonly IUnitOfWork _unitOfWork;
 
@@ -17,9 +18,10 @@ namespace ToDoList.Application.Implementaion.Services
 		{
 			_unitOfWork = unitOfWork;
 		}
-		public async Task CreateItem(Item item)
+		public async Task CreateItem(dtoItem item)
 		{
-			await _unitOfWork.ItemRepository.Create(item);
+			var Item=new Item { Name = item.Name ,IsCompleted=item.IsCompleted,Description=item.Description};
+			await _unitOfWork.ItemRepository.Create(Item);
 			await _unitOfWork.SaveChanges();
 
 		}
@@ -31,16 +33,30 @@ namespace ToDoList.Application.Implementaion.Services
 
 		}
 
-		public Task GetItem()
+		public async Task<dtoItem> GetItem(int id)
 		{
-			throw new NotImplementedException();
+
+			var item= await _unitOfWork.ItemRepository.ReadById(id);
+			var Item=new dtoItem { Description = item.Description ,Name=item.Name,Id=item.Id,IsCompleted=item.IsCompleted };
+			return Item;
 		}
 
-		public async Task<Item> UpdateItem(Item item)
+		public async Task<List<dtoItem>> GetItems()
 		{
-			 _unitOfWork.ItemRepository.Update(item);
+			var items=await _unitOfWork.ItemRepository.ReadAll();
+			var Items=new List<dtoItem>();
+			foreach (var item in items) {
+				Items.Add(new dtoItem { Description = item.Description, Name = item.Name, Id = item.Id, IsCompleted = item.IsCompleted });
+			}
+			return Items;
+		}
+
+		public async Task UpdateItem(dtoItem item)
+		{
+			var Item = new Item { Name = item.Name, IsCompleted = item.IsCompleted, Description = item.Description,Id=item.Id };
+
+			_unitOfWork.ItemRepository.Update(Item);
 			await _unitOfWork.SaveChanges();
-			return await _unitOfWork.ItemRepository.ReadById(item.Id);
 		}
 	}
 }

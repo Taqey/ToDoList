@@ -7,7 +7,7 @@
 		public string Description { get; set; }
 		public bool IsCompleted { get; set; } = false;
 		public List<ItemDate>? ItemDates { get; set; } = new List<ItemDate>();
-		public ApplicationUser User { get; set; }
+		public ApplicationUser? User { get; set; }
 
 	}
 }

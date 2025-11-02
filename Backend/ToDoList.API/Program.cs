@@ -39,6 +39,17 @@ namespace ToDoList.API
 			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 			builder.Services.AddScoped<IListService,ListService>();
 			builder.Services.AddScoped<IItemService, ItemService>();
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("AllowFrontend",
+					policy =>
+					{
+						policy.WithOrigins("http://127.0.0.1:5500")
+							  .AllowAnyHeader()
+							  .AllowAnyMethod(); 
+					});
+			});
+
 			var app = builder.Build();
 			
 
@@ -53,6 +64,7 @@ namespace ToDoList.API
 			app.UseHttpsRedirection();
 
 			app.UseAuthorization();
+			app.UseCors("AllowFrontend");
 
 
 			app.MapControllers();

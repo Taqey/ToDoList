@@ -36,25 +36,30 @@ namespace ToDoList.API.Controllers
 
 		// POST api/<ItemsController>
 		[HttpPost]
-		public async Task Post([FromBody] ItemDto dto)
+		public async Task<IActionResult> Post([FromBody] ItemDto dto)
 		{
 			var item=new dtoItem { Name =dto.Name,Description=dto.Description,IsCompleted=dto.IsCompleted};
 			await _service.CreateItem(item);
+			return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+
 		}
 
 		// PUT api/<ItemsController>/5
 		[HttpPut("{id}")]
-		public async Task Put(int id,[FromBody] ItemDto dto)
+		public async Task<IActionResult> Put(int id,[FromBody] ItemDto dto)
 		{
 			var item = new dtoItem { Name = dto.Name, Description = dto.Description, IsCompleted = dto.IsCompleted ,Id=id};
 			await _service.UpdateItem(item);
+			return Ok(item);
+
 		}
 
 		// DELETE api/<ItemsController>/5
 		[HttpDelete("{id}")]
-		public async Task Delete(int id)
+		public async Task<IActionResult> Delete(int id)
 		{
 			await _service.DeleteItem(id);
+			return NoContent();
 		}
 	}
 }

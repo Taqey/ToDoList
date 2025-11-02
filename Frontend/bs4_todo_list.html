@@ -8,26 +8,59 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="container">
-  <div class="row justify-content-center">
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar لل Lists -->
+    <div class="col-md-4 bg-light sidebar p-3">
+      <h5>Lists</h5>
+
+      <!-- Add List Form (hidden by default) -->
+      <div class="add-list-form mb-2 d-none">
+        <input type="text" class="form-control mb-1 add-list-name" placeholder="List Name">
+        <input type="text" class="form-control mb-1 add-list-desc" placeholder="Description">
+        <button class="btn btn-success btn-sm save-list-btn">Save</button>
+        <button class="btn btn-secondary btn-sm cancel-list-btn">Cancel</button>
+      </div>
+
+      <button class="btn btn-primary btn-sm show-add-list-btn mb-2">Add List</button>
+      <ul class="list-group list-of-lists mb-3"></ul>
+    </div>
+
+    <!-- Main Area -->
     <div class="col-md-8">
       <div class="card card-white">
         <div class="card-body">
-          <form action="javascript:void(0);" class="d-flex mb-3">
+          <!-- Form إضافة مهمة -->
+          <form class="d-flex mb-3">
             <input type="text" class="form-control add-task" placeholder="New Task...">
+            <input type="text" class="form-control ml-2 add-task-desc" placeholder="Description...">
             <button type="button" class="btn btn-primary ml-2 add-btn">Add</button>
           </form>
 
+          <!-- فلترة Tasks -->
           <ul class="nav nav-pills todo-nav mb-3">
-            <li role="presentation" class="nav-item all-task active"><a href="#" class="nav-link">All</a></li>
-            <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
-            <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
+            <li class="nav-item"><a href="#" class="nav-link active">All</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Active</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Completed</a></li>
           </ul>
 
+          <!-- قائمة المهام -->
           <div class="todo-list"></div>
-
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal لتعديل Item -->
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <h5>Edit Item</h5>
+      <input type="text" class="form-control mb-2 edit-item-name" placeholder="Task Name">
+      <input type="text" class="form-control mb-2 edit-item-desc" placeholder="Description">
+      <button class="btn btn-success save-item-btn">Save</button>
+      <button class="btn btn-secondary close-item-btn" data-bs-dismiss="modal">Cancel</button>
     </div>
   </div>
 </div>

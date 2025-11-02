@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ToDo List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card card-white">
+        <div class="card-body">
+          <form action="javascript:void(0);" class="d-flex mb-3">
+            <input type="text" class="form-control add-task" placeholder="New Task...">
+            <button type="button" class="btn btn-primary ml-2 add-btn">Add</button>
+          </form>
+
+          <ul class="nav nav-pills todo-nav mb-3">
+            <li role="presentation" class="nav-item all-task active"><a href="#" class="nav-link">All</a></li>
+            <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
+            <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
+          </ul>
+
+          <div class="todo-list"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

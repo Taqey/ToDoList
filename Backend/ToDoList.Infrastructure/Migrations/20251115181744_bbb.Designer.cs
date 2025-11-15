@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoList.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using ToDoList.Infrastructure.Persistence;
 namespace ToDoList.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251115181744_bbb")]
+    partial class bbb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,34 +328,6 @@ namespace ToDoList.Infrastructure.Migrations
                     b.ToTable("Lists");
                 });
 
-            modelBuilder.Entity("ToDoList.Domain.Entities.RefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ExpiresOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("RevokedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("RefreshToken");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -443,20 +418,11 @@ namespace ToDoList.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ToDoList.Domain.Entities.RefreshToken", b =>
-                {
-                    b.HasOne("ToDoList.Domain.Entities.ApplicationUser", null)
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
             modelBuilder.Entity("ToDoList.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Items");
 
                     b.Navigation("Lists");
-
-                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("ToDoList.Domain.Entities.Date", b =>

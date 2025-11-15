@@ -9,16 +9,16 @@ using ToDoList.Domain.Entities;
 
 namespace ToDoList.Infrastructure.Persistence
 {
-	public class AppDbContext : IdentityDbContext
+	public class AppDbContext : IdentityDbContext<ApplicationUser>
 	{
 		public DbSet<Date> Dates { get; set; }
 		public DbSet<Item> Items { get; set; }
 		public DbSet<List> Lists { get; set; }
 		public DbSet<ItemDate> ItemDates { get; set; }
-		public AppDbContext(DbContextOptions options) : base(options)
+		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
 		{
-
 		}
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 

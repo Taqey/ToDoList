@@ -6,6 +6,11 @@ using ToDoList.Application.Interfaces.Services;
 using ToDoList.Domain.Repositories;
 using ToDoList.Infrastructure.Implementation;
 using ToDoList.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using ToDoList.Infrastructure;
+using ToDoList.Infrastructure.Implementation.Services;
 
 namespace ToDoList.API
 {
@@ -25,17 +30,39 @@ namespace ToDoList.API
 			{
 				options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,$"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
 				options.SwaggerDoc("v1",new OpenApiInfo {Title="ToDoListAPI",Contact=new OpenApiContact { Email="atakieeldeen@gmail.com",Name="Taqeyy"},Version="v1" });
-
+				options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme,new OpenApiSecurityScheme { Name= "Authorization", In=ParameterLocation.Header,Type=SecuritySchemeType.ApiKey,Scheme=JwtBearerDefaults.AuthenticationScheme});
+				options.AddSecurityRequirement(new OpenApiSecurityRequirement
+				{
+					{
+						new OpenApiSecurityScheme
+						{
+							Reference = new OpenApiReference
+							{
+								Type = ReferenceType.SecurityScheme,
+								Id = JwtBearerDefaults.AuthenticationScheme
+							},
+							In = ParameterLocation.Header,
+							Name = "Authorization"
+						},
+						new List<string>()
+					}
+				});
 			});
 
 			builder.Services.AddDbContext<AppDbContext>(options =>
 			{
 				options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 			});
+			builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 			builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 			builder.Services.AddScoped<IListService,ListService>();
 			builder.Services.AddScoped<IItemService, ItemService>();
+			//builder.Services.AddScoped<ILoginService, LoginService>();
+			//builder.Services.AddScoped<IRegisterService, RegisterService>();
+			//builder.Services.AddScoped<IUserService,UserService>();
+			builder.Services.AddScoped<IRefreshToken, RefreshToken>();
+			builder.Services.AddScoped<IJwtToken, JwtToken>();
 			builder.Services.AddCors(options =>
 			{
 				options.AddPolicy("AllowAll",
@@ -43,7 +70,20 @@ namespace ToDoList.API
 									  .AllowAnyMethod()
 									  .AllowAnyHeader());
 			});
-
+			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
+			{
+				options.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidateAudience = true,
+					ValidateIssuer = true,
+					ValidateLifetime = true,
+					ValidateIssuerSigningKey = true,
+					ValidIssuer = builder.Configuration["Jwt:Issuer"],
+					ValidAudience = builder.Configuration["Jwt:Audience"],
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+					ClockSkew=TimeSpan.Zero
+				};
+				});
 			var app = builder.Build();
 			
 
@@ -56,9 +96,9 @@ namespace ToDoList.API
 			}
 
 			app.UseHttpsRedirection();
-
-			app.UseAuthorization();
 			app.UseCors("AllowAll");
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 
 			app.MapControllers();

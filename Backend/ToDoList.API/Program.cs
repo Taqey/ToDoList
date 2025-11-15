@@ -1,11 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using ToDoList.Application.Implementaion.Services;
 using ToDoList.Application.Interfaces.Services;
-using ToDoList.Domain.Entities;
 using ToDoList.Domain.Repositories;
 using ToDoList.Infrastructure.Implementation;
 using ToDoList.Infrastructure.Persistence;
@@ -41,13 +38,10 @@ namespace ToDoList.API
 			builder.Services.AddScoped<IItemService, ItemService>();
 			builder.Services.AddCors(options =>
 			{
-				options.AddPolicy("AllowFrontend",
-					policy =>
-					{
-						policy.WithOrigins("http://127.0.0.1:5500")
-							  .AllowAnyHeader()
-							  .AllowAnyMethod(); 
-					});
+				options.AddPolicy("AllowAll",
+					builder => builder.AllowAnyOrigin()
+									  .AllowAnyMethod()
+									  .AllowAnyHeader());
 			});
 
 			var app = builder.Build();
@@ -64,7 +58,7 @@ namespace ToDoList.API
 			app.UseHttpsRedirection();
 
 			app.UseAuthorization();
-			app.UseCors("AllowFrontend");
+			app.UseCors("AllowAll");
 
 
 			app.MapControllers();

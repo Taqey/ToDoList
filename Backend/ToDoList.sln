@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36603.0 d17.14
+VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.API", "ToDoList.API\ToDoList.API.csproj", "{56982946-A9DE-4390-BE64-A9983F18A042}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8863D36F-F8AC-4B2D-A8F3-9FFB9A20407B} = {8863D36F-F8AC-4B2D-A8F3-9FFB9A20407B}
+		{A81245C2-EC33-43C2-9D80-0AF46CA01327} = {A81245C2-EC33-43C2-9D80-0AF46CA01327}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Domain", "ToDoList.Domain\ToDoList.Domain.csproj", "{8863D36F-F8AC-4B2D-A8F3-9FFB9A20407B}"
 EndProject

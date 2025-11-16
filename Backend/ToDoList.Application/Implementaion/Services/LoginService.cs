@@ -40,11 +40,9 @@ namespace ToDoList.Application.Implementaion.Services
 			if (!await _userService.CheckPasswordAsync(user, password))
 				return new dtoAuth { message = "username or password is wrong" };
 
-			// Create tokens
 			var jwt = _jwtToken.CreateJwtToken(user);
 			var refresh = _refreshToken.CreateRefreshToken();
 
-			// Save refresh token in DB
 			user.RefreshTokens.Add(refresh);
 			await _userService.UpdateAsync(user);
 
@@ -76,7 +74,7 @@ namespace ToDoList.Application.Implementaion.Services
 				return new dtoAuth { message = "Invalid Token" };
 			}
 
-			var refreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == token);
+			var refreshToken = user.RefreshTokens?.SingleOrDefault(t => t.Token == token);
 			if (refreshToken == null)
 			{
 				return new dtoAuth { message = "Token not found" };
@@ -90,7 +88,7 @@ namespace ToDoList.Application.Implementaion.Services
 			refreshToken.RevokedOn = DateTime.UtcNow;
 
 			var newRefreshToken = _refreshToken.CreateRefreshToken();
-			user.RefreshTokens.Add(newRefreshToken);
+			user.RefreshTokens?.Add(newRefreshToken);
 
 			var newAccessToken = _jwtToken.CreateJwtToken(user);
 			var cookieOptions = new CookieOptions

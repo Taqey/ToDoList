@@ -10,5 +10,6 @@ namespace ToDoList.Application.Interfaces.Services
 	public interface ILoginService
 	{
 		Task<dtoAuth> Login(string username, string password);
+		Task<dtoAuth> RefreshToken(string token);
 			}
 }

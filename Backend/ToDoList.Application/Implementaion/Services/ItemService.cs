@@ -13,18 +13,26 @@ namespace ToDoList.Application.Implementaion.Services
 	public class ItemService : IItemService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IUserService _userService;
 
 		public ItemService(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 		}
-		public async Task CreateItem(dtoItem item)
+		public async Task CreateItem(dtoItem item, string userId)
 		{
-			var Item=new Item { Name = item.Name ,IsCompleted=item.IsCompleted,Description=item.Description};
-			await _unitOfWork.ItemRepository.Create(Item);
-			await _unitOfWork.SaveChanges();
+			var newItem = new Item
+			{
+				Name = item.Name,
+				Description = item.Description,
+				IsCompleted = item.IsCompleted,
+				UserId = userId  
+			};
 
+			await _unitOfWork.ItemRepository.Create(newItem);
+			await _unitOfWork.SaveChanges();
 		}
+
 
 		public async Task DeleteItem(int id)
 		{
@@ -36,24 +44,27 @@ namespace ToDoList.Application.Implementaion.Services
 		public async Task<dtoItem> GetItem(int id)
 		{
 
-			var item= await _unitOfWork.ItemRepository.ReadById(id);
-			var Item=new dtoItem { Description = item.Description ,Name=item.Name,Id=item.Id,IsCompleted=item.IsCompleted };
+			var item = await _unitOfWork.ItemRepository.ReadById(id);
+			var Item = new dtoItem { Description = item.Description, Name = item.Name, Id = item.Id, IsCompleted = item.IsCompleted };
 			return Item;
 		}
 
-		public async Task<List<dtoItem>> GetItems()
+		public async Task<List<dtoItem>> GetItems(string UserId)
 		{
-			var items=await _unitOfWork.ItemRepository.ReadAll();
-			var Items=new List<dtoItem>();
-			foreach (var item in items) {
-				Items.Add(new dtoItem { Description = item.Description, Name = item.Name, Id = item.Id, IsCompleted = item.IsCompleted });
-			}
-			return Items;
+			var items = (await _unitOfWork.ItemRepository.Search(e => e.UserId == UserId)).Select(item => new dtoItem
+			{
+				Id = item.Id,
+				Name = item.Name,
+				Description = item.Description,
+				IsCompleted = item.IsCompleted
+			}).ToList();
+
+			return items;
 		}
 
-		public async Task UpdateItem(dtoItem item)
+		public async Task UpdateItem(dtoItem item, string UserId)
 		{
-			var Item = new Item { Name = item.Name, IsCompleted = item.IsCompleted, Description = item.Description,Id=item.Id };
+			var Item = new Item { Name = item.Name, IsCompleted = item.IsCompleted, Description = item.Description, Id = item.Id,UserId=UserId };
 
 			_unitOfWork.ItemRepository.Update(Item);
 			await _unitOfWork.SaveChanges();

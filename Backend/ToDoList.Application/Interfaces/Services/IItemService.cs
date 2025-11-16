@@ -10,10 +10,10 @@ namespace ToDoList.Application.Interfaces.Services
 {
 	public interface IItemService
 	{
-		Task CreateItem(dtoItem item);
+		Task CreateItem(dtoItem item,string UserId);
 		Task<dtoItem> GetItem(int id);
-		Task <List<dtoItem>> GetItems();
-		Task UpdateItem(dtoItem item);
+		Task <List<dtoItem>> GetItems( string UserId);
+		Task UpdateItem(dtoItem item,string UserId);
 		Task DeleteItem(int id);
 
 	}

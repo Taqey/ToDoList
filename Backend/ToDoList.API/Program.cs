@@ -82,11 +82,15 @@ namespace ToDoList.API
 			builder.Services.AddScoped<IJwtToken, JwtToken>();
 			builder.Services.AddCors(options =>
 			{
-				options.AddPolicy("AllowAll",
-					builder => builder.AllowAnyOrigin()
-									  .AllowAnyMethod()
-									  .AllowAnyHeader());
+				options.AddPolicy("AllowLocalhost",
+					builder => builder
+						.WithOrigins("http://127.0.0.1:5500") // حط الـ frontend origin
+						.AllowAnyHeader()
+						.AllowAnyMethod()
+						.AllowCredentials() // ضروري لو تبعت الكوكيز أو الـ Authorization
+				);
 			});
+
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
 			{
 				options.TokenValidationParameters = new TokenValidationParameters
@@ -113,7 +117,7 @@ namespace ToDoList.API
 			}
 
 			app.UseHttpsRedirection();
-			app.UseCors("AllowAll");
+			app.UseCors("AllowLocalhost");
 			app.UseAuthentication();
 			app.UseAuthorization();
 

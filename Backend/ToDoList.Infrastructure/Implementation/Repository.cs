@@ -43,6 +43,16 @@
 
 			}
 		public async ValueTask<IEnumerable<T>> Search(Expression<Func<T, bool>> predicate) => await _context.Set<T>().Where(predicate).ToListAsync();
+		public async ValueTask<IEnumerable<T>> SearchInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+		{
+			IQueryable<T> query = _context.Set<T>().AsQueryable();
+			foreach (var include in includes)
+			{
+				query = query.Include(include);
+			}
+			return await query.Where(predicate).ToListAsync();
+			
+		}
 
 		public async Task<IEnumerable<T>> GetAllIncluding(params Expression<Func<T, object>>[] includes)
 			{

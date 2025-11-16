@@ -10,12 +10,12 @@ namespace ToDoList.Application.Interfaces.Services
 {
 	public interface IListService
 	{
-		Task CreateList(dtoList list);
+		Task CreateList(dtoList list,string UserId);
 		Task AddItemToList(int listId, int itemId);
 		Task RemoveItemToList(int listId, int itemId);
-		Task UpdateList(dtoList list);
+		Task UpdateList(dtoList list,string UserId);
 		Task RemoveList(int id);
 		Task<dtoList> ShowList(int id);
-		Task<List<dtoList>> ShowLists();
+		Task<List<dtoList>> ShowLists(string UserId);
 	}
 }

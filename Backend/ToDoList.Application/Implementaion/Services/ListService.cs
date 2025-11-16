@@ -34,9 +34,9 @@ namespace ToDoList.Application.Implementaion.Services
 
 		}
 
-		public async Task CreateList(dtoList list)
+		public async Task CreateList(dtoList list, string UserId)
 		{
-			var List = new List { Description = list.Description, Name = list.Name };
+			var List = new List { Description = list.Description, Name = list.Name,UserId=UserId };
 
 			await _unitOfWork.ListRepository.Create(List);
 			await _unitOfWork.SaveChanges();
@@ -60,9 +60,9 @@ namespace ToDoList.Application.Implementaion.Services
 
 		}
 
-		public async Task<List<dtoList>> ShowLists()
+		public async Task<List<dtoList>> ShowLists(string UserId)
 		{
-			var lists = await _unitOfWork.ListRepository.GetAllIncluding2(l => l.Items);
+			var lists = await _unitOfWork.ListRepository.SearchInclude(l=>l.UserId==UserId,l=>l.Items);
 			var dtoLists = new List<dtoList>();
 			var items= new List<dtoItem>();
 			foreach (var listEntity in lists)
@@ -75,13 +75,39 @@ namespace ToDoList.Application.Implementaion.Services
 			return dtoLists;
 		}
 
-		public async Task UpdateList(dtoList list)
+		public async Task UpdateList(dtoList dto, string userId)
 		{
-			var Items = list.Items.Select(x => new Item { Id = x.Id, Description = x.Description, IsCompleted = x.IsCompleted, Name = x.Name }).ToList();
-			var List=new List { Id=list.Id,Description=list.Description,Name=list.Name,Items= Items };
-			_unitOfWork.ListRepository.Update(List);
+			// 1. هات الـ List الأصلية من الداتا
+			var list = await _unitOfWork.ListRepository.ReadById(dto.Id);
+
+			if (list == null)
+				throw new Exception("List not found");
+
+			// 2. حدّث الخصائص الأساسية
+			list.Name = dto.Name;
+			list.Description = dto.Description;
+			list.UserId = userId;
+
+			// 3. تحديث الـ Items (Remove + Add + Update)
+			list.Items.Clear();
+
+			foreach (var x in dto.Items)
+			{
+				list.Items.Add(new Item
+				{
+					Id = x.Id,
+					Name = x.Name,
+					Description = x.Description,
+					IsCompleted = x.IsCompleted,
+					UserId = userId,
+					ListId = list.Id
+				});
+			}
+
+			// 4. Save changes
 			await _unitOfWork.SaveChanges();
 		}
+
 
 	}
 }

@@ -17,6 +17,7 @@ namespace ToDoList.Domain.Repositories
 		Task<IEnumerable<T>> GetAllIncluding(params Expression<Func<T, object>>[] includes);
 		Task<IEnumerable<T>> GetAllIncluding2(params Expression<Func<T, object>>[] includes);
 		ValueTask<IEnumerable<T>> Search(Expression<Func<T, bool>> predicate);
+		ValueTask<IEnumerable<T>> SearchInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
 	}
 }

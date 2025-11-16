@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Register - ToDo List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    .register-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .register-container h2 {
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .form-group label {
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      padding: 12px;
+      font-weight: 500;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    .alert {
+      margin-top: 15px;
+      border-radius: 5px;
+    }
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+    .form-row .form-group {
+      margin-bottom: 15px;
+    }
+    .password-requirements {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Create Account</h2>
+    <form id="registerForm">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="firstName">First Name</label>
+          <input type="text" class="form-control" id="firstName" name="firstName" required autocomplete="given-name">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="lastName">Last Name</label>
+          <input type="text" class="form-control" id="lastName" name="lastName" required autocomplete="family-name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="userName">Username</label>
+        <input type="text" class="form-control" id="userName" name="userName" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required autocomplete="tel">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
+        <div class="password-requirements">
+          Must be at least 8 characters, include uppercase, lowercase, digit, and special character
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+          <label class="form-check-label" for="rememberMe">
+            Remember Me
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Register</button>
+      <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+      <div id="successMessage" class="alert alert-success d-none" role="alert"></div>
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // Check if already logged in
+    if (authService.isAuthenticated()) {
+      window.location.href = 'index.html';
+    }
+
+    // Handle register form submission
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        userName: document.getElementById('userName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phoneNumber: document.getElementById('phoneNumber').value.trim(),
+        password: document.getElementById('password').value
+      };
+      
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const errorDiv = document.getElementById('errorMessage');
+      const successDiv = document.getElementById('successMessage');
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      
+      // Clear previous messages
+      errorDiv.classList.add('d-none');
+      successDiv.classList.add('d-none');
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
+      
+      // Validate passwords match
+      if (formData.password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
+      
+      const rememberMe = document.getElementById('rememberMe').checked;
+      
+      try {
+        const result = await authService.register(formData, rememberMe);
+        if (result.success) {
+          successDiv.textContent = result.message || 'Registration successful! Redirecting...';
+          successDiv.classList.remove('d-none');
+          
+          // If auto-login succeeded, redirect to main app
+          if (result.token) {
+            setTimeout(() => {
+              window.location.href = 'index.html';
+            }, 1000);
+          } else {
+            // If auto-login failed, redirect to login page
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 2000);
+          }
+        }
+      } catch (error) {
+        errorDiv.textContent = error.message || 'Registration failed. Please try again.';
+        errorDiv.classList.remove('d-none');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>
+

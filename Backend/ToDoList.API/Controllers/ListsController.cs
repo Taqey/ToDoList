@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoList.API.Contracts;
 using ToDoList.Application.Contracts;
@@ -22,7 +23,9 @@ namespace ToDoList.API.Controllers
 		[HttpGet]
 		public async Task<List<dtoList>> Get()
 		{
-			var lists = await _service.ShowLists();
+			var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			var lists = await _service.ShowLists(UserId);
 			return lists;
 		}
 
@@ -38,8 +41,9 @@ namespace ToDoList.API.Controllers
 		[HttpPost]
 		public async Task Post([FromBody] ListDto dto)
 		{
+			var UserId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 			var List = new dtoList { Name = dto.Name, Description = dto.Description };
-			await _service.CreateList(List);
+			await _service.CreateList(List,UserId);
 
 		}
 
@@ -47,8 +51,10 @@ namespace ToDoList.API.Controllers
 		[HttpPut("EditList/{id}")]
 		public async Task EditList(int id, [FromBody] ListDto dto)
 		{
+			var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
 			var list = new dtoList { Id = id, Name = dto.Name, Description = dto.Description, Items = dto.Items };
-			await _service.UpdateList(list);
+			await _service.UpdateList(list, UserId);
 		}
 
 		[HttpPut("AddItem/{id}")]

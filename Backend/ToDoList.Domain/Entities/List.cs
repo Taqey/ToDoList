@@ -7,6 +7,8 @@
 		public string? Description { get; set; }
 		public List<Item>? Items { get; set; } = new List<Item>();
 		public ApplicationUser? User { get; set; }
+		public string UserId { get; set; }
+
 
 
 	}

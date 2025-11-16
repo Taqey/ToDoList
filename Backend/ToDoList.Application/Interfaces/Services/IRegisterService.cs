@@ -4,6 +4,6 @@ namespace ToDoList.Application.Interfaces.Services
 {
 	public interface IRegisterService
 	{
-		void Register (dtoRegister dto);
+		Task<dtoRegisterResult> Register (dtoRegister dto);
 	}
 }

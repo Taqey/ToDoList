@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoList.API.Contracts;
 using ToDoList.Application.Contracts;
@@ -10,6 +12,7 @@ namespace ToDoList.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize]
 	public class ItemsController : ControllerBase
 	{
 		private readonly IItemService _service;
@@ -22,7 +25,8 @@ namespace ToDoList.API.Controllers
 		[HttpGet]
 		public async Task<List<dtoItem>> Get()
 		{
-			return await _service.GetItems();
+			var UserId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			return await _service.GetItems(UserId);
 		}
 
 		// GET api/<ItemsController>/5
@@ -38,8 +42,9 @@ namespace ToDoList.API.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] ItemDto dto)
 		{
+			var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 			var item=new dtoItem { Name =dto.Name,Description=dto.Description,IsCompleted=dto.IsCompleted};
-			await _service.CreateItem(item);
+			await _service.CreateItem(item,UserId);
 			return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
 
 		}
@@ -48,8 +53,10 @@ namespace ToDoList.API.Controllers
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put(int id,[FromBody] ItemDto dto)
 		{
+			var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
 			var item = new dtoItem { Name = dto.Name, Description = dto.Description, IsCompleted = dto.IsCompleted ,Id=id};
-			await _service.UpdateItem(item);
+			await _service.UpdateItem(item, UserId);
 			return Ok(item);
 
 		}

@@ -9,6 +9,7 @@
 		public int? ListId { get; set; }       
 		public List? List { get; set; }
 		public List<ItemDate>? ItemDates { get; set; } = new List<ItemDate>();
+		public string UserId { get; set; }
 		public ApplicationUser? User { get; set; }
 
 	}

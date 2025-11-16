@@ -15,7 +15,15 @@ namespace ToDoList.Infrastructure.Implementation.Services
 		}
 		public async Task<ApplicationUser?> GetByEmailAsync(string email)
 		{
+
 			var user = await _manager.FindByEmailAsync(email);
+			return user;
+
+		}
+		public async Task<ApplicationUser?> GetByIdAsync(string id)
+		{
+
+			var user = await _manager.FindByIdAsync(id);
 			return user;
 
 		}
@@ -55,8 +63,12 @@ namespace ToDoList.Infrastructure.Implementation.Services
 		}
 		public async Task<ApplicationUser> GetUserByToken(string token)
 		{
-			return await _manager.Users.SingleOrDefaultAsync(x => x.RefreshTokens != null && x.RefreshTokens.Any(rt => rt.Token == token));
+			return await _manager.Users
+				.Include(u => u.RefreshTokens)
+				.Where(u => u.RefreshTokens.Any(rt => rt.Token == token))
+				.SingleOrDefaultAsync();
 		}
+
 
 	}
 }

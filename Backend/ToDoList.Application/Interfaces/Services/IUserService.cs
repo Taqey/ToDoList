@@ -7,6 +7,7 @@ namespace ToDoList.Application.Interfaces.Services
 	public interface IUserService
 	{
 		Task<ApplicationUser?> GetByEmailAsync(string email);
+		Task<ApplicationUser?> GetByIdAsync(string id);
 		Task<ApplicationUser?> GetByUsernameAsync(string username);
 		Task<IdentityResult> CreateUserAsync(ApplicationUser applicationUser, string password);
 		Task<bool> CheckPasswordAsync(ApplicationUser applicationUser, string Password);
@@ -14,5 +15,6 @@ namespace ToDoList.Application.Interfaces.Services
 		Task<IdentityResult> ForgetPasswordAsync(ApplicationUser applicationUser, string newPassword);
 		Task<ApplicationUser> GetUserByToken(string token);
 		Task UpdateAsync(ApplicationUser user);
+
 	}
 }
